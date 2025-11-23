@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Académica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 50%, #2196F3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animación de fondo */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+        
+        @keyframes moveBackground {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+        
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+        
+        /* Panel Izquierdo - Información */
+        .info-panel {
+            background: linear-gradient(135deg, #0D47A1 0%, #1565C0 100%);
+            padding: 60px 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.3;
+            }
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            font-size: 48px;
+            font-weight: bold;
+            color: #0D47A1;
+            animation: fadeInScale 0.8s ease;
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.8s ease 0.2s both;
+        }
+        
+        .logo-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            animation: fadeInDown 0.8s ease 0.4s both;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .info-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInLeft 0.8s ease 0.6s both;
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                transform: translateX(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .info-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .info-content p {
+            font-size: 16px;
+            line-height: 1.8;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+        
+        .features {
+            list-style: none;
+            margin-top: 30px;
+        }
+        
+        .features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            opacity: 0.95;
+        }
+        
+        .features li::before {
+            content: '✓';
+            margin-right: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Panel Derecho - Formulario */
+        .form-panel {
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeInRight 0.8s ease 0.4s both;
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                transform: translateX(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .form-header {
+            margin-bottom: 40px;
+        }
+        
+        .form-header h1 {
+            color: #0D47A1;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: #666;
+            font-size: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+            pointer-events: none;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #0D47A1;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(13, 71, 161, 0.1);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .remember-me input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .forgot-password {
+            color: #0D47A1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .forgot-password:hover {
+            color: #1565C0;
+            text-decoration: underline;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 71, 161, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .alert-error {
+            background: #FFCDD2;
+            color: #C62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        .alert-success {
+            background: #C8E6C9;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .alert-info {
+            background: #BBDEFB;
+            color: #0D47A1;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        
+        .divider::before {
+            margin-right: 15px;
+        }
+        
+        .divider::after {
+            margin-left: 15px;
+        }
+        
+        .help-links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .help-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        .help-links a:hover {
+            color: #0D47A1;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #999;
+            font-size: 13px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 450px;
+            }
+            
+            .info-panel {
+                display: none;
+            }
+            
+            .form-panel {
+                padding: 40px 30px;
+            }
+        }
+        
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading.active {
+            display: flex;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0D47A1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    
+    <div class="login-container">
+        <!-- Panel Izquierdo - Información -->
+        <div class="info-panel">
+            <div class="logo-container">
+                <div class="logo">IMG</div>
+                <div class="logo-text">Nombre de la institución</div>
+                <div class="logo-subtitle">2025</div>
+            </div>
+            
+            <div class="info-content">
+                <h2>Sistema de Gestión de Notas y Estudiantes</h2>
+                <p>
+                    Accede a tu portal académico para gestionar calificaciones, 
+                    consultar notas y generar reportes de rendimiento académico.
+                </p>
+                
+                <ul class="features">
+                    <li>Consulta de notas en tiempo real</li>
+                    <li>Gestión de calificaciones</li>
+                    <li>Reportes académicos detallados</li>
+                    <li>Notificaciones automáticas</li>
+                    <li>Acceso seguro 24/7</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Panel Derecho - Formulario -->
+        <div class="form-panel">
+            <div class="form-header">
+                <h1>Iniciar Sesión</h1>
+                <p>Ingresa tus credenciales para acceder al sistema</p>
+            </div>
+            
+            <!-- Mensajes de Django -->
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+            
+            <!-- Formulario de Login - ACTION CORREGIDO -->
+            <form method="POST" id="loginForm" onsubmit="handleSubmit(event)">
+            
+                
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Ingresa tu usuario o código" 
+                            required 
+                            autocomplete="username"
+                            autofocus>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Ingresa tu contraseña" 
+                            required
+                            autocomplete="current-password">
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" id="remember">
+                        <span>Recordarme</span>
+                    </label>
+                    <a href="#" class="forgot-password" onclick="alert('Contacta con el administrador del sistema'); return false;">¿Olvidaste tu contraseña?</a>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    Ingresar al Sistema
+                </button>
+            </form>
+            
+            <div class="divider">o</div>
+            
+            <div class="help-links">
+                <a href="#" onclick="alert('Contacto: soporte@ucc.edu.co'); return false;">Ayuda</a>
+                <a href="#" onclick="alert('Soporte: +57 123 456 7890'); return false;">Soporte Técnico</a>
+                <a href="#" onclick="alert('Campus Pasto - UCC'); return false;">Contacto</a>
+            </div>
+            
+            <div class="footer">
+                <p>© 2025 Nombre de la institución</p>
+                <p>Sistema de Gestión Académica</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Función mejorada para manejar el envío
+        function handleSubmit(event) {
+            // No prevenir el envío, dejar que Django lo maneje
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                document.getElementById('loading').classList.add('active');
+            }
+            
+            // Retornar true para permitir el envío
+            return true;
+        }
+        
+        // Efecto de foco en inputs
+        const inputs = document.querySelectorAll('input[type="text"], input[type="password"]');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.parentElement.style.transition = 'transform 0.3s';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.parentElement.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Validación en tiempo real
+        document.getElementById('username').addEventListener('input', function(e) {
+            if (this.value.length > 0) {
+                this.style.borderColor = '#4CAF50';
+            } else {
+                this.style.borderColor = '#e0e0e0';
+            }
+        });
+        
+        document.getElementById('password').addEventListener('input', function(e) {
+            if (this.value.length >= 6) {
+                this.style.borderColor = '#4CAF50';
+            } else if (this.value.length > 0) {
+                this.style.borderColor = '#FF9800';
+            } else {
+                this.style.borderColor = '#e0e0e0';
+            }
+        });
+        
+        // Debug: Mostrar que el form está listo
+        console.log('✅ Formulario de login listo');
+        console.log('📍 URL actual:', window.location.href);
+    </script>
+</body>
+</html>

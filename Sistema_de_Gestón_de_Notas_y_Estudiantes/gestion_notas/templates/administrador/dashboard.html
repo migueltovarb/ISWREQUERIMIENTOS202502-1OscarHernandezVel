@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Administrador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0D47A1;
+            font-size: 18px;
+        }
+        
+        .header-title h1 {
+            font-size: 26px;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 26px;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        
+        .user-profile:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            border: 3px solid white;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .welcome-section h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-section p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+            border-left: 5px solid #0D47A1;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card.green {
+            border-left-color: #4CAF50;
+        }
+        
+        .stat-card.orange {
+            border-left-color: #FF9800;
+        }
+        
+        .stat-card.purple {
+            border-left-color: #9C27B0;
+        }
+        
+        .stat-card.blue {
+            border-left-color: #2196F3;
+        }
+        
+        .stat-info h3 {
+            font-size: 42px;
+            color: #0D47A1;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .stat-info p {
+            color: #666;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+        
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        /* Section Card */
+        .section-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+        
+        .section-header h2 {
+            color: #333;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 71, 161, 0.3);
+        }
+        
+        /* Management Grid */
+        .management-grid {
+            display: grid;
+            gap: 18px;
+        }
+        
+        .management-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #0D47A1;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .management-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        }
+        
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .management-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .management-badge {
+            background: #0D47A1;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .management-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .management-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #0D47A1;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1565C0;
+        }
+        
+        .btn-secondary {
+            background: #E3F2FD;
+            color: #0D47A1;
+        }
+        
+        .btn-secondary:hover {
+            background: #BBDEFB;
+        }
+        
+        .btn-danger {
+            background: #FFCDD2;
+            color: #C62828;
+        }
+        
+        .btn-danger:hover {
+            background: #EF5350;
+            color: white;
+        }
+        
+        /* Reports Section */
+        .reports-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .report-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .report-item:hover {
+            background: #E3F2FD;
+            transform: translateY(-3px);
+        }
+        
+        .report-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .report-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .report-details h4 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .report-details p {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        /* Activity Log */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+            transition: all 0.3s;
+        }
+        
+        .activity-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .activity-item.edit {
+            border-left-color: #FF9800;
+        }
+        
+        .activity-item.delete {
+            border-left-color: #f44336;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        
+        .activity-user {
+            font-weight: 700;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .activity-time {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .activity-description {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .quick-action {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .quick-action:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .quick-action-icon {
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">UCC</div>
+            <div class="header-title">
+                <h1>Panel de Administración</h1>
+                <p>Nombre de la institución</p>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <div class="notification-badge">7</div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">MT</div>
+                <div>
+                    <div style="font-weight: bold; font-size: 15px;">Miguel Castro</div>
+                    <div style="font-size: 13px; opacity: 0.8;">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2>¡Bienvenido al Panel de Administración!</h2>
+            <p>Gestiona el sistema académico, genera reportes y supervisa el rendimiento institucional</p>
+        </div>
+        
+        <!-- Dashboard Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card blue">
+                <div class="stat-info">
+                    <h3>2,456</h3>
+                    <p>Estudiantes Activos</p>
+                </div>
+                <div class="stat-icon">👨‍🎓</div>
+            </div>
+            
+            <div class="stat-card green">
+                <div class="stat-info">
+                    <h3>156</h3>
+                    <p>Profesores</p>
+                </div>
+                <div class="stat-icon">👨‍🏫</div>
+            </div>
+            
+            <div class="stat-card orange">
+                <div class="stat-info">
+                    <h3>84</h3>
+                    <p>Cursos Activos</p>
+                </div>
+                <div class="stat-icon">📚</div>
+            </div>
+            
+            <div class="stat-card purple">
+                <div class="stat-info">
+                    <h3>4.1</h3>
+                    <p>Promedio Institucional</p>
+                </div>
+                <div class="stat-icon">⭐</div>
+            </div>
+        </div>
+        
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Column -->
+            <div>
+                <!-- Gestión de Cursos -->
+                <div class="section-card" style="margin-bottom: 25px;">
+                    <div class="section-header">
+                        <h2>🎓 Gestión de Cursos</h2>
+                        <button class="action-btn">+ Nuevo Curso</button>
+                    </div>
+                    
+                    <div class="management-grid">
+                        <div class="management-item">
+                            <div class="management-header">
+                                <span class="management-title">Religión - Rel-301</span>
+                                <span class="management-badge">Grupo A</span>
+                            </div>
+                            <div class="management-description">
+                                Profesor: Carlos Rodríguez • Estudiantes: 32 • Promedio: 4.2
+                            </div>
+                            <div class="management-actions">
+                                <button class="btn btn-primary">Editar</button>
+                                <button class="btn btn-secondary">Ver Detalles</button>
+                                <button class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="management-item">
+                            <div class="management-header">
+                                <span class="management-title">Lenguaje - Len-202</span>
+                                <span class="management-badge">Grupo B</span>
+                            </div>
+                            <div class="management-description">
+                                Profesor: María González • Estudiantes: 28 • Promedio: 4.5
+                            </div>
+                            <div class="management-actions">
+                                <button class="btn btn-primary">Editar</button>
+                                <button class="btn btn-secondary">Ver Detalles</button>
+                                <button class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="management-item">
+                            <div class="management-header">
+                                <span class="management-title">Matemáticas - Mat-402</span>
+                                <span class="management-badge">Grupo A</span>
+                            </div>
+                            <div class="management-description">
+                                Profesor: Luis Martínez • Estudiantes: 35 • Promedio: 4.1
+                            </div>
+                            <div class="management-actions">
+                                <button class="btn btn-primary">Editar</button>
+                                <button class="btn btn-secondary">Ver Detalles</button>
+                                <button class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <button class="quick-action">
+                            <span class="quick-action-icon">📊</span>
+                            <span>Generar Reporte</span>
+                        </button>
+                        <button class="quick-action">
+                            <span class="quick-action-icon">📥</span>
+                            <span>Exportar Datos</span>
+                        </button>
+                        <button class="quick-action">
+                            <span class="quick-action-icon">⚙️</span>
+                            <span>Configuración</span>
+                        </button>
+                        <button class="quick-action">
+                            <span class="quick-action-icon">👥</span>
+                            <span>Gestionar Usuarios</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Reportes Disponibles -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>📈 Reportes Disponibles</h2>
+                    </div>
+                    
+                    <div class="reports-grid">
+                        <div class="report-item">
+                            <div class="report-info">
+                                <div class="report-icon">📊</div>
+                                <div class="report-details">
+                                    <h4>Rendimiento Académico General</h4>
+                                    <p>Por periodo, programa y curso</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Generar</button>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="report-info">
+                                <div class="report-icon">👥</div>
+                                <div class="report-details">
+                                    <h4>Listado de Estudiantes</h4>
+                                    <p>Con filtros avanzados</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Generar</button>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="report-info">
+                                <div class="report-icon">📝</div>
+                                <div class="report-details">
+                                    <h4>Notas por Materia</h4>
+                                    <p>Desglose detallado</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Generar</button>
+                        </div>
+                        
+                        <div class="report-item">
+                            <div class="report-info">
+                                <div class="report-icon">📉</div>
+                                <div class="report-details">
+                                    <h4>Estudiantes en Riesgo</h4>
+                                    <p>Promedios bajos</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Generar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div>
+                <!-- Log de Actividad -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>📋 Log de Actividad</h2>
+                    </div>
+                    
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-header">
+                                <span class="activity-user">Prof. Carlos Rodríguez</span>
+                                <span class="activity-time">Hace 15 min</span>
+                            </div>
+                            <div class="activity-description">
+                                Registró 18 calificaciones en Rel-301 Grupo A
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item edit">
+                            <div class="activity-header">
+                                <span class="activity-user">Admin. Miguel Castro</span>
+                                <span class="activity-time">Hace 1h</span>
+                            </div>
+                            <div class="activity-description">
+                                Editó información del curso Mat-402
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-header">
+                                <span class="activity-user">Prof. María González</span>
+                                <span class="activity-time">Hace 2h</span>
+                            </div>
+                            <div class="activity-description">
+                                Agregó observaciones a 5 estudiantes en Len-202
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-header">
+                                <span class="activity-user">Sistema</span>
+                                <span class="activity-time">Hace 3h</span>
+                            </div>
+                            <div class="activity-description">
+                                Generó reporte automático de rendimiento del periodo
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item edit">
+                            <div class="activity-header">
+                                <span class="activity-user">Prof. Luis Martínez</span>
+                                <span class="activity-time">Hace 4h</span>
+                            </div>
+                            <div class="activity-description">
+                                Modificó calificación del estudiante Juan Pérez
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item delete">
+                            <div class="activity-header">
+                                <span class="activity-user">Admin. Miguel Castro</span>
+                                <span class="activity-time">Ayer</span>
+                            </div>
+                            <div class="activity-description">
+                                Eliminó curso inactivo Ing-301
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-header">
+                                <span class="activity-user">Prof. Ana Ramírez</span>
+                                <span class="activity-time">Ayer</span>
+                            </div>
+                            <div class="activity-description">
+                                Publicó 25 notas finales en Rel-208
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

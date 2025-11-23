@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudiantes del Curso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #0D47A1;
+            font-size: 28px;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .course-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-item .label {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .info-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .search-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: #0D47A1;
+        }
+        
+        .students-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #0D47A1;
+            color: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        th {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .student-code {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .grade {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .badge.aprobado {
+            background: #C8E6C9;
+            color: #2E7D32;
+        }
+        
+        .badge.reprobado {
+            background: #FFCDD2;
+            color: #C62828;
+        }
+        
+        .badge.pendiente {
+            background: #FFF9C4;
+            color: #F57F17;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 5px;
+        }
+        
+        .btn-calificar {
+            background: #0D47A1;
+            color: white;
+        }
+        
+        .btn-calificar:hover {
+            background: #1565C0;
+        }
+        
+        .btn-ver {
+            background: #E3F2FD;
+            color: #0D47A1;
+        }
+        
+        .btn-ver:hover {
+            background: #BBDEFB;
+        }
+        
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-header h2 {
+            color: #0D47A1;
+            font-size: 24px;
+        }
+        
+        .close-btn {
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            border: none;
+            background: none;
+            line-height: 1;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0D47A1;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .nota-input {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .nota-preview {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .nota-preview .nota-grande {
+            font-size: 72px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .nota-preview .estado {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+        }
+        
+        .calificaciones-existentes {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .calificaciones-existentes h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
+        .cal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .cal-item strong {
+            color: #333;
+        }
+        
+        .cal-item .nota {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: #E3F2FD;
+            color: #0D47A1;
+            border-left: 4px solid #0D47A1;
+        }
+        
+        .alert-warning {
+            background: #FFF3E0;
+            color: #F57F17;
+            border-left: 4px solid #FF9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <h1>{{ curso.materia.nombre }} - Grupo {{ curso.grupo }}</h1>
+                <a href="{% url 'mis_cursos' %}" class="back-btn">← Volver a Mis Cursos</a>
+            </div>
+            
+            <div class="course-info">
+                <div class="info-item">
+                    <div class="label">Código</div>
+                    <div class="value">{{ curso.materia.codigo }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Créditos</div>
+                    <div class="value">{{ curso.materia.creditos }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Estudiantes</div>
+                    <div class="value">{{ estudiantes_data|length }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Horario</div>
+                    <div class="value" style="font-size: 14px;">{{ curso.horario }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Aula</div>
+                    <div class="value">{{ curso.aula }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Buscar estudiante por nombre o código..." onkeyup="buscarEstudiante()">
+        </div>
+        
+        <!-- Students Table -->
+        <div class="students-table">
+            <table id="studentsTable">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Estudiante</th>
+                        <th>Promedio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in estudiantes_data %}
+                    <tr>
+                        <td>
+                            <span class="student-code">{{ data.estudiante.codigo_estudiantil }}</span>
+                        </td>
+                        <td>
+                            <div class="student-name">{{ data.estudiante.usuario.get_full_name }}</div>
+                            <div class="student-code">{{ data.estudiante.usuario.email }}</div>
+                        </td>
+                        <td>
+                            <span class="grade">{{ data.promedio|floatformat:2|default:"--" }}</span>
+                        </td>
+                        <td>
+                            <span class="badge {{ data.estado|lower }}">{{ data.estado }}</span>
+                        </td>
+                        <td>
+                            <button class="action-btn btn-calificar" onclick="abrirModalCalificar('{{ data.inscripcion.id }}', '{{ data.estudiante.usuario.get_full_name|escapejs }}')">
+                                Calificar
+                            </button>
+                            <button class="action-btn btn-ver" onclick="verDetalles('{{ data.inscripcion.id }}')">
+                                Ver Detalles
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 40px; color: #999;">
+                            No hay estudiantes inscritos en este curso
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Modal Calificar -->
+    <div id="modalCalificar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Registrar Calificación</h2>
+                <button class="close-btn" onclick="cerrarModal('modalCalificar')">&times;</button>
+            </div>
+            
+            <div id="calificacionesExistentes"></div>
+            
+            <form method="POST" action="" id="formCalificar" onsubmit="return validarFormulario(event)">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="tipo_evaluacion">Tipo de Evaluación *</label>
+                    <select id="tipo_evaluacion" name="tipo_evaluacion" required>
+                        <option value="">Seleccione...</option>
+                        {% for tipo in tipos_evaluacion %}
+                        <option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nota">Nota (0.0 - 5.0) *</label>
+                    <input type="number" id="nota" name="nota" step="0.1" min="0" max="5" 
+                           class="nota-input" placeholder="0.0" required 
+                           oninput="actualizarPreview(this.value)">
+                </div>
+                
+                <div class="nota-preview" id="notaPreview" style="display: none;">
+                    <div class="nota-grande" id="notaGrande">0.0</div>
+                    <div class="estado" id="estadoNota"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea id="observaciones" name="observaciones" 
+                              placeholder="Comentarios adicionales sobre el desempeño del estudiante..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit">Guardar Calificación</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Ver Detalles -->
+    <div id="modalDetalles" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalDetallesTitulo">Detalles del Estudiante</h2>
+                <button class="close-btn" onclick="cerrarModal('modalDetalles')">&times;</button>
+            </div>
+            
+            <div id="detallesBody">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let inscripcionActual = null;
+        
+        function buscarEstudiante() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById('studentsTable');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.textContent || row.innerText;
+                
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+        
+        function abrirModalCalificar(inscripcionId, nombreEstudiante) {
+            inscripcionActual = inscripcionId;
+            document.getElementById('modalTitulo').textContent = `Calificar a ${nombreEstudiante}`;
+            document.getElementById('formCalificar').action = `/profesor/calificacion/${inscripcionId}/`;
+            
+            // Cargar calificaciones existentes
+            fetch(`/api/calificaciones/${inscripcionId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '<div class="calificaciones-existentes">';
+                    html += '<h3>Calificaciones Registradas</h3>';
+                    
+                    if (data.calificaciones.length > 0) {
+                        data.calificaciones.forEach(cal => {
+                            html += `
+                                <div class="cal-item">
+                                    <strong>${cal.tipo}</strong>
+                                    <span class="nota">${cal.nota.toFixed(1)}</span>
+                                </div>
+                            `;
+                        });
+                        html += `<div class="alert alert-info">Promedio actual: <strong>${data.promedio.toFixed(2)}</strong></div>`;
+                    } else {
+                        html += '<div class="alert alert-warning">No hay calificaciones registradas</div>';
+                    }
+                    
+                    html += '</div>';
+                    document.getElementById('calificacionesExistentes').innerHTML = html;
+                });
+            
+            document.getElementById('modalCalificar').classList.add('active');
+        }
+        
+        function actualizarPreview(nota) {
+            const preview = document.getElementById('notaPreview');
+            const notaGrande = document.getElementById('notaGrande');
+            const estadoNota = document.getElementById('estadoNota');
+            
+            if (nota) {
+                preview.style.display = 'block';
+                notaGrande.textContent = parseFloat(nota).toFixed(1);
+                
+                if (nota >= 3.0) {
+                    estadoNota.innerHTML = '<span class="badge aprobado">Aprobado</span>';
+                } else {
+                    estadoNota.innerHTML = '<span class="badge reprobado">Reprobado</span>';
+                }
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+        
+        function validarFormulario(event) {
+            const nota = parseFloat(document.getElementById('nota').value);
+            
+            if (nota < 0 || nota > 5) {
+                alert('La nota debe estar entre 0.0 y 5.0');
+                event.preventDefault();
+                return false;
+            }
+            
+            if (confirm(`¿Confirmar registro de nota ${nota.toFixed(1)}?`)) {
+                return true;
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        }
+        
+        function verDetalles(inscripcionId) {
+            fetch(`/api/calificaciones/${inscripcionId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = `
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h3 style="color: #333; margin-bottom: 10px;">${data.estudiante}</h3>
+                            <div class="nota-grande" style="font-size: 64px; color: #0D47A1;">
+                                ${data.promedio ? data.promedio.toFixed(2) : 'N/A'}
+                            </div>
+                            <span class="badge ${data.estado.toLowerCase()}">${data.estado}</span>
+                        </div>
+                        
+                        <h3 style="margin-bottom: 15px; color: #333;">📊 Historial de Calificaciones</h3>
+                    `;
+                    
+                    if (data.calificaciones.length > 0) {
+                        data.calificaciones.forEach(cal => {
+                            html += `
+                                <div class="cal-item" style="margin-bottom: 15px;">
+                                    <div>
+                                        <strong>${cal.tipo}</strong>
+                                        <div style="font-size: 12px; color: #666;">${cal.fecha}</div>
+                                    </div>
+                                    <span class="nota">${cal.nota.toFixed(1)}</span>
+                                </div>
+                            `;
+                            
+                            if (cal.observaciones) {
+                                html += `
+                                    <div style="background: #FFF3E0; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #FF9800;">
+                                        <strong>💬 Observación:</strong>
+                                        <p style="margin: 5px 0 0 0; color: #666;">${cal.observaciones}</p>
+                                    </div>
+                                `;
+                            }
+                        });
+                    } else {
+                        html += '<div class="alert alert-warning">No hay calificaciones registradas</div>';
+                    }
+                    
+                    document.getElementById('detallesBody').innerHTML = html;
+                    document.getElementById('modalDetalles').classList.add('active');
+                })
+                .catch(error => {
+                    alert('Error al cargar los detalles');
+                    console.error(error);
+                });
+        }
+        
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if (modalId === 'modalCalificar') {
+                document.getElementById('formCalificar').reset();
+                document.getElementById('notaPreview').style.display = 'none';
+            }
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModal(this.id);
+                }
+            });
+        });
+        
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModal('modalCalificar');
+                cerrarModal('modalDetalles');
+            }
+        });
+    </script>
+</body>
+</html>

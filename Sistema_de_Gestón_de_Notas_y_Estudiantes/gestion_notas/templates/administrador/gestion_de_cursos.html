@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Cursos - Admin UCC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #0D47A1;
+            font-size: 28px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #0D47A1;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .filters-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .courses-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .course-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #0D47A1;
+            transition: all 0.3s;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+        
+        .course-title {
+            flex: 1;
+        }
+        
+        .course-title h3 {
+            color: #0D47A1;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .course-title p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .course-badge {
+            background: #E3F2FD;
+            color: #0D47A1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .course-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            text-align: center;
+        }
+        
+        .detail-item .label {
+            color: #999;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-item .value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-edit {
+            background: #FFC107;
+            color: #333;
+        }
+        
+        .btn-edit:hover {
+            background: #FFB300;
+        }
+        
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+        
+        .btn-view {
+            background: #E3F2FD;
+            color: #0D47A1;
+        }
+        
+        .btn-view:hover {
+            background: #BBDEFB;
+        }
+        
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+            margin: 20px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-header h2 {
+            color: #0D47A1;
+            font-size: 24px;
+        }
+        
+        .close-btn {
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            border: none;
+            background: none;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0D47A1;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-cancel {
+            width: 100%;
+            padding: 15px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-cancel:hover {
+            background: #bdbdbd;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-danger {
+            background: #FFCDD2;
+            color: #C62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        .alert-warning {
+            background: #FFF3E0;
+            color: #F57F17;
+            border-left: 4px solid #FF9800;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-box .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .stat-box .label {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎓 Gestión de Cursos - Periodo 2025-1</h1>
+            <div class="header-actions">
+                <button class="btn btn-success" onclick="abrirModalNuevo()">
+                    ➕ Nuevo Curso
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">← Dashboard</a>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters-panel">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="periodoFilter">Periodo</label>
+                    <select id="periodoFilter" onchange="filtrar()">
+                        {% for periodo in periodos %}
+                        <option value="{{ periodo.id }}" {% if periodo.id == periodo_actual.id %}selected{% endif %}>
+                            {{ periodo.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="buscar">Buscar</label>
+                    <input type="text" id="buscar" placeholder="Buscar por nombre o código..." onkeyup="buscar()">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="ordenar">Ordenar por</label>
+                    <select id="ordenar" onchange="ordenar()">
+                        <option value="nombre">Nombre</option>
+                        <option value="codigo">Código</option>
+                        <option value="inscritos">Estudiantes</option>
+                        <option value="profesor">Profesor</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Courses Grid -->
+        <div class="courses-grid" id="coursesGrid">
+            {% for curso in cursos %}
+            <div class="course-card" data-nombre="{{ curso.materia.nombre }}" data-codigo="{{ curso.materia.codigo }}">
+                <div class="course-header">
+                    <div class="course-title">
+                        <h3>{{ curso.materia.codigo }} - {{ curso.materia.nombre }}</h3>
+                        <p>Grupo {{ curso.grupo }} • {{ curso.periodo.nombre }}</p>
+                        <p>👨‍🏫 Prof. {{ curso.profesor.usuario.get_full_name }}</p>
+                    </div>
+                    <span class="course-badge">Activo</span>
+                </div>
+                
+                <div class="course-details">
+                    <div class="detail-item">
+                        <div class="label">Créditos</div>
+                        <div class="value">{{ curso.materia.creditos }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Inscritos</div>
+                        <div class="value">{{ curso.estudiantes_inscritos }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Cupo</div>
+                        <div class="value">{{ curso.cupo_maximo }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Horario</div>
+                        <div class="value" style="font-size: 11px;">{{ curso.horario }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Aula</div>
+                        <div class="value">{{ curso.aula }}</div>
+                    </div>
+                </div>
+                
+                <div class="course-actions">
+                    <button class="action-btn btn-view" onclick="verDetalle('{{ curso.id }}')">
+                        👁️ Ver Detalle
+                    </button>
+                    <button class="action-btn btn-edit" onclick="editarCurso('{{ curso.id }}')">
+                        ✏️ Editar
+                    </button>
+                    <button class="action-btn btn-delete" onclick="confirmarEliminar('{{ curso.id }}', '{{ curso.materia.nombre|escapejs }}')">
+                        🗑️ Eliminar
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="course-card">
+                <p style="text-align: center; color: #999;">No hay cursos registrados</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Modal Nuevo/Editar Curso -->
+    <div id="modalCurso" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nuevo Curso</h2>
+                <button class="close-btn" onclick="cerrarModal('modalCurso')">&times;</button>
+            </div>
+            
+            <form id="formCurso" method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="materia">Materia *</label>
+                    <select id="materia" name="materia" required>
+                        <option value="">Seleccione una materia...</option>
+                        <!-- Opciones dinámicas -->
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="periodo">Periodo *</label>
+                        <select id="periodo" name="periodo" required>
+                            {% for periodo in periodos %}
+                            <option value="{{ periodo.id }}" {% if periodo.activo %}selected{% endif %}>
+                                {{ periodo.nombre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="grupo">Grupo *</label>
+                        <input type="text" id="grupo" name="grupo" placeholder="A, B, 01..." required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profesor">Profesor *</label>
+                    <select id="profesor" name="profesor" required>
+                        <option value="">Seleccione un profesor...</option>
+                        <!-- Opciones dinámicas -->
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="horario">Horario</label>
+                        <input type="text" id="horario" name="horario" placeholder="Lun-Mie 10:00-12:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="aula">Aula</label>
+                        <input type="text" id="aula" name="aula" placeholder="Aula 301">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cupo_maximo">Cupo Máximo</label>
+                    <input type="number" id="cupo_maximo" name="cupo_maximo" value="30" min="1">
+                </div>
+                
+                <button type="submit" class="btn-submit">💾 Guardar Curso</button>
+                <button type="button" class="btn-cancel" onclick="cerrarModal('modalCurso')">❌ Cancelar</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Ver Detalle -->
+    <div id="modalDetalle" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="detalleTitulo">Detalle del Curso</h2>
+                <button class="close-btn" onclick="cerrarModal('modalDetalle')">&times;</button>
+            </div>
+            
+            <div id="detalleBody">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Eliminar Confirmación -->
+    <div id="modalEliminar" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>⚠️ Confirmar Eliminación</h2>
+                <button class="close-btn" onclick="cerrarModal('modalEliminar')">&times;</button>
+            </div>
+            
+            <div class="alert alert-danger">
+                <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+            </div>
+            
+            <p style="margin-bottom: 20px; color: #666;">
+                ¿Está seguro de que desea eliminar el curso <strong id="cursoAEliminar"></strong>?
+            </p>
+            
+            <button class="btn-submit" style="background: #f44336;" onclick="eliminarCurso()">
+                🗑️ Sí, Eliminar
+            </button>
+            <button class="btn-cancel" onclick="cerrarModal('modalEliminar')">
+                Cancelar
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let cursoIdAEliminar = null;
+        
+        function abrirModalNuevo() {
+            document.getElementById('modalTitulo').textContent = 'Nuevo Curso';
+            document.getElementById('formCurso').reset();
+            document.getElementById('modalCurso').classList.add('active');
+        }
+        
+        function editarCurso(cursoId) {
+            document.getElementById('modalTitulo').textContent = 'Editar Curso';
+            // Aquí cargarías los datos del curso
+            document.getElementById('modalCurso').classList.add('active');
+        }
+        
+        function verDetalle(cursoId) {
+            // Simulación de datos - en producción haría fetch al backend
+            const html = `
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="number">32</div>
+                        <div class="label">Inscritos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">4.2</div>
+                        <div class="label">Promedio</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">28</div>
+                        <div class="label">Aprobados</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">4</div>
+                        <div class="label">Reprobados</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 20px 0 15px 0; color: #333;">📚 Información del Curso</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <p style="margin-bottom: 10px;"><strong>Código:</strong> ISW-501</p>
+                    <p style="margin-bottom: 10px;"><strong>Materia:</strong> Ingeniería de Software</p>
+                    <p style="margin-bottom: 10px;"><strong>Créditos:</strong> 3</p>
+                    <p style="margin-bottom: 10px;"><strong>Profesor:</strong> Carlos Rodríguez</p>
+                    <p style="margin-bottom: 10px;"><strong>Horario:</strong> Lun-Mie 10:00-12:00</p>
+                    <p><strong>Aula:</strong> 301</p>
+                </div>
+            `;
+            
+            document.getElementById('detalleBody').innerHTML = html;
+            document.getElementById('modalDetalle').classList.add('active');
+        }
+        
+        function confirmarEliminar(cursoId, nombreCurso) {
+            cursoIdAEliminar = cursoId;
+            document.getElementById('cursoAEliminar').textContent = nombreCurso;
+            document.getElementById('modalEliminar').classList.add('active');
+        }
+        
+        function eliminarCurso() {
+            if (cursoIdAEliminar) {
+                // Aquí harías la petición al backend
+                alert('Curso eliminado correctamente');
+                cerrarModal('modalEliminar');
+                // Recargar página o actualizar lista
+                location.reload();
+            }
+        }
+        
+        function buscar() {
+            const input = document.getElementById('buscar').value.toUpperCase();
+            const cards = document.querySelectorAll('.course-card');
+            
+            cards.forEach(card => {
+                const nombre = card.getAttribute('data-nombre');
+                const codigo = card.getAttribute('data-codigo');
+                
+                if (nombre && codigo) {
+                    if (nombre.toUpperCase().includes(input) || codigo.toUpperCase().includes(input)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        function filtrar() {
+            const periodoId = document.getElementById('periodoFilter').value;
+            window.location.href = `?periodo=${periodoId}`;
+        }
+        
+        function ordenar() {
+            // Implementar ordenamiento
+            alert('Ordenamiento en desarrollo');
+        }
+        
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // Cerrar modales al hacer clic fuera
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    cerrarModal(this.id);
+                }
+            });
+        });
+        
+        // Cerrar con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

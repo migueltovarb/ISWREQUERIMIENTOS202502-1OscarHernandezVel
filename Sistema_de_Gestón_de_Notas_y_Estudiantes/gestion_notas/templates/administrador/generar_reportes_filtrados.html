@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Reportes - Administrador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #0D47A1;
+            font-size: 28px;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+        
+        .panel-header h2 {
+            color: #0D47A1;
+            font-size: 22px;
+        }
+        
+        .report-types {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .report-type-card {
+            padding: 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .report-type-card:hover {
+            border-color: #0D47A1;
+            background: #E3F2FD;
+            transform: translateY(-3px);
+        }
+        
+        .report-type-card.selected {
+            border-color: #0D47A1;
+            background: #E3F2FD;
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.2);
+        }
+        
+        .report-type-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .report-type-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .report-icon {
+            font-size: 32px;
+        }
+        
+        .report-type-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .report-type-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-left: 47px;
+        }
+        
+        .filters-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .filters-section h3 {
+            color: #0D47A1;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #0D47A1;
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1);
+        }
+        
+        .format-section {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .format-section h3 {
+            color: #2E7D32;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .format-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .format-option {
+            padding: 20px;
+            border: 3px solid #C8E6C9;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .format-option:hover {
+            border-color: #4CAF50;
+            background: white;
+            transform: scale(1.05);
+        }
+        
+        .format-option.selected {
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .format-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .format-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .format-option h4 {
+            color: #2E7D32;
+            margin-bottom: 5px;
+        }
+        
+        .format-option p {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .preview-section {
+            max-height: 700px;
+            overflow-y: auto;
+        }
+        
+        .preview-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #0D47A1;
+        }
+        
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .preview-header h4 {
+            color: #0D47A1;
+            font-size: 16px;
+        }
+        
+        .preview-badge {
+            padding: 6px 12px;
+            background: #E3F2FD;
+            color: #0D47A1;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .preview-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .stat-item .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .stat-item .label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .recent-reports {
+            margin-top: 25px;
+        }
+        
+        .recent-reports h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .report-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .report-history-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .report-info {
+            flex: 1;
+        }
+        
+        .report-info h5 {
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        
+        .report-info p {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .icon-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .icon-btn.download {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .icon-btn.download:hover {
+            background: #45a049;
+        }
+        
+        .icon-btn.delete {
+            background: #f44336;
+            color: white;
+        }
+        
+        .icon-btn.delete:hover {
+            background: #d32f2f;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: #E3F2FD;
+            color: #0D47A1;
+            border-left: 4px solid #0D47A1;
+        }
+        
+        .alert-success {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0D47A1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <h1>📊 Generador de Reportes Académicos</h1>
+                <a href="{% url 'dashboard' %}" class="back-btn">← Dashboard</a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Configuración del Reporte -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>⚙️ Configurar Reporte</h2>
+                </div>
+                
+                <form id="formReporte" method="POST" action="{% url 'generar_reporte' %}">
+                    {% csrf_token %}
+                    
+                    <!-- Tipo de Reporte -->
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #333; margin-bottom: 15px;">1. Seleccione el Tipo de Reporte</h3>
+                        
+                        <div class="report-types">
+                            <label class="report-type-card">
+                                <input type="radio" name="tipo_reporte" value="rendimiento_general" checked onchange="actualizarFiltros(this.value)">
+                                <div class="report-type-header">
+                                    <span class="report-icon">📈</span>
+                                    <h3>Rendimiento Académico General</h3>
+                                </div>
+                                <p class="report-type-description">
+                                    Análisis completo de promedios, aprobados y reprobados por curso, con estadísticas detalladas del periodo académico.
+                                </p>
+                            </label>
+                            
+                            <label class="report-type-card">
+                                <input type="radio" name="tipo_reporte" value="estudiantes_riesgo" onchange="actualizarFiltros(this.value)">
+                                <div class="report-type-header">
+                                    <span class="report-icon">⚠️</span>
+                                    <h3>Estudiantes en Riesgo Académico</h3>
+                                </div>
+                                <p class="report-type-description">
+                                    Listado de estudiantes con promedio inferior a 3.0, identificando casos que requieren atención prioritaria.
+                                </p>
+                            </label>
+                            
+                            <label class="report-type-card">
+                                <input type="radio" name="tipo_reporte" value="notas_por_materia" onchange="actualizarFiltros(this.value)">
+                                <div class="report-type-header">
+                                    <span class="report-icon">📚</span>
+                                    <h3>Notas por Materia</h3>
+                                </div>
+                                <p class="report-type-description">
+                                    Desglose completo de calificaciones por materia específica, incluyendo todos los tipos de evaluación.
+                                </p>
+                            </label>
+                            
+                            <label class="report-type-card">
+                                <input type="radio" name="tipo_reporte" value="comparativo_periodos" onchange="actualizarFiltros(this.value)">
+                                <div class="report-type-header">
+                                    <span class="report-icon">📊</span>
+                                    <h3>Comparativo entre Periodos</h3>
+                                </div>
+                                <p class="report-type-description">
+                                    Análisis comparativo del rendimiento académico entre diferentes periodos académicos.
+                                </p>
+                            </label>
+                            
+                            <label class="report-type-card">
+                                <input type="radio" name="tipo_reporte" value="desempeno_profesor" onchange="actualizarFiltros(this.value)">
+                                <div class="report-type-header">
+                                    <span class="report-icon">👨‍🏫</span>
+                                    <h3>Desempeño por Docente</h3>
+                                </div>
+                                <p class="report-type-description">
+                                    Estadísticas de rendimiento de estudiantes agrupadas por docente, útil para evaluación institucional.
+                                </p>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtros -->
+                    <div class="filters-section">
+                        <h3>2. Aplicar Filtros</h3>
+                        
+                        <div class="filters-grid">
+                            <div class="filter-group">
+                                <label for="periodo">Periodo Académico *</label>
+                                <select id="periodo" name="periodo" required>
+                                    <option value="">Seleccione...</option>
+                                    {% for periodo in periodos %}
+                                    <option value="{{ periodo.id }}" {% if periodo.activo %}selected{% endif %}>
+                                        {{ periodo.nombre }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group" id="filter-programa">
+                                <label for="programa">Programa</label>
+                                <select id="programa" name="programa">
+                                    <option value="">Todos los programas</option>
+                                    {% for programa in programas %}
+                                    <option value="{{ programa.id }}">{{ programa.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group" id="filter-materia">
+                                <label for="materia">Materia</label>
+                                <select id="materia" name="materia">
+                                    <option value="">Todas las materias</option>
+                                    {% for materia in materias %}
+                                    <option value="{{ materia.id }}">{{ materia.codigo }} - {{ materia.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group" id="filter-profesor">
+                                <label for="profesor">Docente</label>
+                                <select id="profesor" name="profesor">
+                                    <option value="">Todos los docentes</option>
+                                    {% for profesor in profesores %}
+                                    <option value="{{ profesor.id }}">{{ profesor.usuario.get_full_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group" id="filter-fecha-inicio">
+                                <label for="fecha_inicio">Fecha Inicio</label>
+                                <input type="date" id="fecha_inicio" name="fecha_inicio">
+                            </div>
+                            
+                            <div class="filter-group" id="filter-fecha-fin">
+                                <label for="fecha_fin">Fecha Fin</label>
+                                <input type="date" id="fecha_fin" name="fecha_fin">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Formato de Exportación -->
+                    <div class="format-section">
+                        <h3>3. Formato de Exportación</h3>
+                        
+                        <div class="format-options">
+                            <label class="format-option selected">
+                                <input type="radio" name="formato" value="pdf" checked>
+                                <div class="format-icon">📄</div>
+                                <h4>PDF</h4>
+                                <p>Documento imprimible</p>
+                            </label>
+                            
+                            <label class="format-option">
+                                <input type="radio" name="formato" value="excel">
+                                <div class="format-icon">📊</div>
+                                <h4>Excel</h4>
+                                <p>Hoja de cálculo editable</p>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón Generar -->
+                    <button type="submit" class="generate-btn" onclick="generarReporte(event)">
+                        Generar Reporte
+                    </button>
+                </form>
+                
+                <!-- Loading -->
+                <div class="loading" id="loadingSection">
+                    <div class="spinner"></div>
+                    <p style="color: #666;">Generando reporte, por favor espere...</p>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Preview y Historial -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Vista Previa y Estadísticas</h2>
+                </div>
+                
+                <div class="alert alert-info">
+                    ℹ️ <strong>Información:</strong> Los reportes se generan en tiempo real con los datos actuales del sistema.
+                </div>
+                
+                <!-- Preview de Estadísticas -->
+                <div class="preview-section" id="previewSection">
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <h4>Estadísticas Generales</h4>
+                            <span class="preview-badge">Periodo 2025-1</span>
+                        </div>
+                        
+                        <div class="preview-stats">
+                            <div class="stat-item">
+                                <div class="number">{{ total_estudiantes }}</div>
+                                <div class="label">Estudiantes Activos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="number">{{ total_cursos }}</div>
+                                <div class="label">Cursos Activos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="number">{{ promedio_institucional|floatformat:2 }}</div>
+                                <div class="label">Promedio General</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <h4>Distribución de Rendimiento</h4>
+                        </div>
+                        
+                        <div class="preview-stats">
+                            <div class="stat-item">
+                                <div class="number" style="color: #4CAF50;">{{ estudiantes_aprobados }}</div>
+                                <div class="label">Aprobados</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="number" style="color: #FF9800;">{{ estudiantes_riesgo }}</div>
+                                <div class="label">En Riesgo</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="number" style="color: #f44336;">{{ estudiantes_reprobados }}</div>
+                                <div class="label">Reprobados</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Historial de Reportes -->
+                <div class="recent-reports">
+                    <h3>Reportes Generados Recientemente</h3>
+                    
+                    <div class="report-history-item">
+                        <div class="report-info">
+                            <h5>Rendimiento Académico General 2025-1</h5>
+                            <p>Generado el 22/11/2024 a las 10:30 AM • PDF</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="icon-btn download" title="Descargar"></button>
+                            <button class="icon-btn delete" title="Eliminar"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-history-item">
+                        <div class="report-info">
+                            <h5>Estudiantes en Riesgo 2025-1</h5>
+                            <p>Generado el 21/11/2024 a las 15:45 PM • Excel</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="icon-btn download" title="Descargar"></button>
+                            <button class="icon-btn delete" title="Eliminar"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-history-item">
+                        <div class="report-info">
+                            <h5>Notas por Materia - ISW-501</h5>
+                            <p>Generado el 20/11/2024 a las 09:15 AM • PDF</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="icon-btn download" title="Descargar">💾</button>
+                            <button class="icon-btn delete" title="Eliminar">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Selección de tipo de reporte
+        document.querySelectorAll('.report-type-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.report-type-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        
+        // Selección de formato
+        document.querySelectorAll('.format-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        
+        // Actualizar filtros según tipo de reporte
+        function actualizarFiltros(tipoReporte) {
+            // Resetear visibilidad de filtros
+            document.getElementById('filter-programa').style.display = 'block';
+            document.getElementById('filter-materia').style.display = 'block';
+            document.getElementById('filter-profesor').style.display = 'block';
+            document.getElementById('filter-fecha-inicio').style.display = 'block';
+            document.getElementById('filter-fecha-fin').style.display = 'block';
+            
+            // Ajustar según tipo
+            if (tipoReporte === 'notas_por_materia') {
+                document.getElementById('materia').required = true;
+            } else {
+                document.getElementById('materia').required = false;
+            }
+            
+            if (tipoReporte === 'desempeno_profesor') {
+                document.getElementById('profesor').required = true;
+            } else {
+                document.getElementById('profesor').required = false;
+            }
+        }
+        
+        // Generar reporte
+        function generarReporte(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('formReporte');
+            const formData = new FormData(form);
+            
+            // Validar periodo
+            if (!formData.get('periodo')) {
+                alert('⚠️ Por favor seleccione un periodo académico');
+                return;
+            }
+            
+            // Mostrar loading
+            document.getElementById('loadingSection').classList.add('active');
+            form.style.display = 'none';
+            
+            // Simular generación (en producción sería una petición real)
+            setTimeout(() => {
+                // Enviar formulario
+                form.submit();
+            }, 1500);
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleccionar primer tipo de reporte
+            document.querySelector('.report-type-card').classList.add('selected');
+            
+            // Fecha actual para los filtros de fecha
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha_fin').value = hoy;
+            
+            // Fecha de hace 3 meses
+            const hace3meses = new Date();
+            hace3meses.setMonth(hace3meses.getMonth() - 3);
+            document.getElementById('fecha_inicio').value = hace3meses.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
