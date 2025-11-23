@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Calificaciones - Profesor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #0D47A1;
+            font-size: 28px;
+        }
+        
+        .back-btn {
+            padding: 10px 20px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .course-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-item .label {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .info-item .value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0D47A1;
+            margin-top: 5px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .panel-header h2 {
+            color: #0D47A1;
+            font-size: 20px;
+        }
+        
+        .config-section {
+            background: #E3F2FD;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .config-section h3 {
+            color: #0D47A1;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .config-item strong {
+            color: #333;
+        }
+        
+        .config-item input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .config-item input:focus {
+            outline: none;
+            border-color: #0D47A1;
+        }
+        
+        .total-porcentaje {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .total-porcentaje.valid {
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+        }
+        
+        .total-porcentaje.invalid {
+            color: #f44336;
+            border: 2px solid #f44336;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-warning {
+            background: #FFF3E0;
+            color: #F57F17;
+            border-left: 4px solid #FF9800;
+        }
+        
+        .alert-success {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .students-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .student-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #0D47A1;
+            transition: all 0.3s;
+        }
+        
+        .student-card:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .student-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .student-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .student-info p {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .student-promedio {
+            text-align: center;
+        }
+        
+        .promedio-actual {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .badge.aprobado {
+            background: #C8E6C9;
+            color: #2E7D32;
+        }
+        
+        .badge.reprobado {
+            background: #FFCDD2;
+            color: #C62828;
+        }
+        
+        .badge.pendiente {
+            background: #FFF9C4;
+            color: #F57F17;
+        }
+        
+        .grades-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .grade-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .grade-input-group label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .grade-input-group input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .grade-input-group input:focus {
+            outline: none;
+            border-color: #0D47A1;
+        }
+        
+        .observaciones-group {
+            margin-top: 10px;
+        }
+        
+        .observaciones-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-save {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: #45a049;
+        }
+        
+        .btn-view {
+            background: #E3F2FD;
+            color: #0D47A1;
+        }
+        
+        .btn-view:hover {
+            background: #BBDEFB;
+        }
+        
+        .save-all-btn {
+            width: 100%;
+            padding: 15px;
+            background: #0D47A1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .save-all-btn:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-fill {
+            height: 30px;
+            background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.3s;
+        }
+        
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-header h2 {
+            color: #0D47A1;
+        }
+        
+        .close-btn {
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            border: none;
+            background: none;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .calc-breakdown {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .calc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .calc-item:last-child {
+            border-bottom: none;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #0D47A1;
+            font-weight: bold;
+            font-size: 18px;
+            color: #0D47A1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <h1>📝 Registrar Calificaciones - {{ curso.materia.nombre }}</h1>
+                <a href="{% url 'mis_cursos' %}" class="back-btn">← Volver</a>
+            </div>
+            
+            <div class="course-info">
+                <div class="info-item">
+                    <div class="label">Código</div>
+                    <div class="value">{{ curso.materia.codigo }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Grupo</div>
+                    <div class="value">{{ curso.grupo }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Créditos</div>
+                    <div class="value">{{ curso.materia.creditos }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Estudiantes</div>
+                    <div class="value">{{ estudiantes_data|length }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Periodo</div>
+                    <div class="value">{{ curso.periodo.nombre }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Configuración de Porcentajes -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>⚙️ Configuración de Porcentajes</h2>
+                </div>
+                
+                <div class="alert alert-warning">
+                    ⚠️ <strong>Importante:</strong> La suma de los porcentajes debe ser exactamente 100%
+                </div>
+                
+                <div class="config-section">
+                    <h3>Distribución de la Nota Final</h3>
+                    
+                    <form id="formPorcentajes">
+                        {% csrf_token %}
+                        
+                        {% for config in configuraciones %}
+                        <div class="config-item">
+                            <strong>{{ config.tipo_evaluacion.nombre }}</strong>
+                            <div>
+                                <input type="number" 
+                                       class="porcentaje-input" 
+                                       data-tipo="{{ config.tipo_evaluacion.id }}"
+                                       value="{{ config.porcentaje }}" 
+                                       min="0" 
+                                       max="100"
+                                       step="0.1"
+                                       oninput="calcularTotal()">
+                                <span>%</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div id="totalPorcentaje" class="total-porcentaje">
+                            Total: <span id="totalValor">100</span>%
+                        </div>
+                    </form>
+                </div>
+                
+                <button class="save-all-btn" onclick="guardarConfiguracion()">
+                    💾 Guardar Configuración de Porcentajes
+                </button>
+                
+                <div class="config-section" style="margin-top: 20px;">
+                    <h3>📊 Ejemplo de Cálculo</h3>
+                    <div class="calc-breakdown">
+                        <div class="calc-item">
+                            <span>Parcial (40%): 4.5</span>
+                            <span>= 1.8</span>
+                        </div>
+                        <div class="calc-item">
+                            <span>Taller (30%): 4.0</span>
+                            <span>= 1.2</span>
+                        </div>
+                        <div class="calc-item">
+                            <span>Proyecto (20%): 5.0</span>
+                            <span>= 1.0</span>
+                        </div>
+                        <div class="calc-item">
+                            <span>Participación (10%): 4.0</span>
+                            <span>= 0.4</span>
+                        </div>
+                        <div class="calc-item">
+                            <span>Nota Final:</span>
+                            <span>4.4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Lista de Estudiantes -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>👥 Estudiantes del Curso</h2>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" data-total="{{ estudiantes_data|length }}" style="width: 0%;">
+                        0 de {{ estudiantes_data|length }} calificados
+                    </div>
+                </div>
+                
+                <div class="students-list">
+                    {% for data in estudiantes_data %}
+                    <div class="student-card" id="student-{{ data.inscripcion.id }}">
+                        <div class="student-header">
+                            <div class="student-info">
+                                <h4>{{ data.estudiante.usuario.get_full_name }}</h4>
+                                <p>Código: {{ data.estudiante.codigo_estudiantil }}</p>
+                            </div>
+                            <div class="student-promedio">
+                                <div class="promedio-actual" id="promedio-{{ data.inscripcion.id }}">
+                                    {{ data.promedio|floatformat:2|default:"--" }}
+                                </div>
+                                <span class="badge {{ data.estado|lower }}">{{ data.estado }}</span>
+                            </div>
+                        </div>
+                        
+                        <form class="form-calificaciones" data-inscripcion="{{ data.inscripcion.id }}">
+                            {% csrf_token %}
+                            
+                            <div class="grades-grid">
+                                {% for tipo in tipos_evaluacion %}
+                                <div class="grade-input-group">
+                                    <label>{{ tipo.nombre }}</label>
+                                    <input type="number" 
+                                           name="nota_{{ tipo.id }}"
+                                           class="nota-input"
+                                           data-tipo="{{ tipo.id }}"
+                                           data-inscripcion="{{ data.inscripcion.id }}"
+                                           placeholder="0.0"
+                                           min="0"
+                                           max="5"
+                                           step="0.1"
+                                           value="{% for cal in data.calificaciones %}{% if cal.tipo_evaluacion.id == tipo.id %}{{ cal.nota }}{% endif %}{% endfor %}"
+                                           oninput="calcularPromedioEstudiante(this.dataset.inscripcion)">
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="observaciones-group">
+                                <textarea name="observaciones" 
+                                          placeholder="Observaciones generales (opcional)..."></textarea>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-save" onclick="guardarCalificaciones('{{ data.inscripcion.id }}')">
+                                    💾 Guardar
+                                </button>
+                                <button type="button" class="btn btn-view" onclick="verCalculoDetallado('{{ data.inscripcion.id }}')">
+                                    🔍 Ver Cálculo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <button class="save-all-btn" onclick="guardarTodasLasCalificaciones()">
+                    💾 Guardar Todas las Calificaciones
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Cálculo Detallado -->
+    <div id="modalCalculo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Cálculo Detallado de la Nota</h2>
+                <button class="close-btn" onclick="cerrarModal()">&times;</button>
+            </div>
+            
+            <div id="calculoBody">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let porcentajes = {};
+        
+        // Inicializar porcentajes
+        document.querySelectorAll('.porcentaje-input').forEach(input => {
+            porcentajes[input.dataset.tipo] = parseFloat(input.value);
+        });
+        
+        function calcularTotal() {
+            let total = 0;
+            document.querySelectorAll('.porcentaje-input').forEach(input => {
+                const valor = parseFloat(input.value) || 0;
+                porcentajes[input.dataset.tipo] = valor;
+                total += valor;
+            });
+            
+            const totalElement = document.getElementById('totalPorcentaje');
+            const valorElement = document.getElementById('totalValor');
+            
+            valorElement.textContent = total.toFixed(1);
+            
+            if (Math.abs(total - 100) < 0.1) {
+                totalElement.className = 'total-porcentaje valid';
+            } else {
+                totalElement.className = 'total-porcentaje invalid';
+            }
+            
+            return total;
+        }
+        
+        function calcularPromedioEstudiante(inscripcionId) {
+            const inputs = document.querySelectorAll(`input[data-inscripcion="${inscripcionId}"]`);
+            let promedioFinal = 0;
+            
+            inputs.forEach(input => {
+                const nota = parseFloat(input.value) || 0;
+                const tipo = input.dataset.tipo;
+                const porcentaje = porcentajes[tipo] / 100;
+                
+                promedioFinal += nota * porcentaje;
+            });
+            
+            const promedioElement = document.getElementById(`promedio-${inscripcionId}`);
+            promedioElement.textContent = promedioFinal.toFixed(2);
+            
+            // Actualizar badge de estado
+            const card = document.getElementById(`student-${inscripcionId}`);
+            const badge = card.querySelector('.badge');
+            
+            if (promedioFinal >= 3.0) {
+                badge.className = 'badge aprobado';
+                badge.textContent = 'Aprobado';
+            } else if (promedioFinal > 0) {
+                badge.className = 'badge reprobado';
+                badge.textContent = 'Reprobado';
+            } else {
+                badge.className = 'badge pendiente';
+                badge.textContent = 'Pendiente';
+            }
+        }
+        
+        function guardarConfiguracion() {
+            const total = calcularTotal();
+            
+            if (Math.abs(total - 100) > 0.1) {
+                alert('Error: La suma de porcentajes debe ser exactamente 100%');
+                return;
+            }
+            
+            if (confirm('¿Guardar la configuración de porcentajes?')) {
+                // Aquí enviarías los datos al backend
+                alert('Configuración guardada correctamente');
+            }
+        }
+        
+        function guardarCalificaciones(inscripcionId) {
+            const form = document.querySelector(`form[data-inscripcion="${inscripcionId}"]`);
+            const formData = new FormData(form);
+            
+            // Validar que las notas estén en rango válido
+            let valid = true;
+            form.querySelectorAll('.nota-input').forEach(input => {
+                const nota = parseFloat(input.value);
+                if (input.value && (nota < 0 || nota > 5)) {
+                    valid = false;
+                }
+            });
+            
+            if (!valid) {
+                alert('Error: Las notas deben estar entre 0.0 y 5.0');
+                return;
+            }
+            
+            // Enviar al backend
+            fetch(`/profesor/calificacion/${inscripcionId}/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Calificaciones guardadas correctamente');
+                    actualizarProgreso();
+                } else {
+                    alert('Error al guardar: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error de conexión');
+            });
+        }
+        
+        function guardarTodasLasCalificaciones() {
+            if (confirm('¿Guardar todas las calificaciones de todos los estudiantes?')) {
+                const forms = document.querySelectorAll('.form-calificaciones');
+                let guardadas = 0;
+                
+                forms.forEach(form => {
+                    const inscripcionId = form.dataset.inscripcion;
+                    guardarCalificaciones(inscripcionId);
+                    guardadas++;
+                });
+                
+                setTimeout(() => {
+                    alert(`✅ Se guardaron las calificaciones de ${guardadas} estudiantes`);
+                }, 1000);
+            }
+        }
+        
+        function verCalculoDetallado(inscripcionId) {
+            const inputs = document.querySelectorAll(`input[data-inscripcion="${inscripcionId}"]`);
+            let html = '<div class="calc-breakdown">';
+            let promedioFinal = 0;
+            
+            inputs.forEach(input => {
+                const nota = parseFloat(input.value) || 0;
+                const tipo = input.dataset.tipo;
+                const porcentaje = porcentajes[tipo];
+                const contribucion = nota * (porcentaje / 100);
+                const tipoNombre = input.closest('.grade-input-group').querySelector('label').textContent;
+                
+                promedioFinal += contribucion;
+                
+                html += `
+                    <div class="calc-item">
+                        <span>${tipoNombre} (${porcentaje}%): ${nota.toFixed(1)}</span>
+                        <span>= ${contribucion.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="calc-item">
+                    <span><strong>Nota Final:</strong></span>
+                    <span><strong>${promedioFinal.toFixed(2)}</strong></span>
+                </div>
+            `;
+            
+            html += '</div>';
+            
+            document.getElementById('calculoBody').innerHTML = html;
+            document.getElementById('modalCalculo').classList.add('active');
+        }
+        
+        function cerrarModal() {
+            document.getElementById('modalCalculo').classList.remove('active');
+        }
+        
+        function actualizarProgreso() {
+            const progressBarEl = document.getElementById('progressBar');
+            const total = parseInt(progressBarEl.dataset.total, 10) || 0;
+            let calificados = 0;
+            
+            document.querySelectorAll('.promedio-actual').forEach(el => {
+                if (el.textContent !== '--') {
+                    calificados++;
+                }
+            });
+            
+            const porcentaje = total === 0 ? 0 : (calificados / total) * 100;
+            const progressBar = progressBarEl;
+            
+            progressBar.style.width = porcentaje + '%';
+            progressBar.textContent = `${calificados} de ${total} calificados`;
+        }
+        
+        // Inicializar progreso
+        actualizarProgreso();
+        
+        // Calcular promedios iniciales
+        document.querySelectorAll('.form-calificaciones').forEach(form => {
+            const inscripcionId = form.dataset.inscripcion;
+            calcularPromedioEstudiante(inscripcionId);
+        });
+        
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarModal();
+            }
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalCalculo').addEventListener('click', (e) => {
+            if (e.target.id === 'modalCalculo') {
+                cerrarModal();
+            }
+        });
+    </script>
+</body>
+</html>

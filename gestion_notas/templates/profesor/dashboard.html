@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Profesor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0D47A1 0%, #1976D2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+        
+        .header-title h1 {
+            font-size: 24px;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .search-bar {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .search-bar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            color: white;
+            width: 250px;
+        }
+        
+        .search-bar input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 24px;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #1976D2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-banner h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .welcome-banner p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .stat-info h3 {
+            font-size: 36px;
+            color: #0D47A1;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        /* Section Card */
+        .section-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section-header h2 {
+            color: #333;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .view-all {
+            color: #0D47A1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .view-all:hover {
+            text-decoration: underline;
+        }
+        
+        /* Cursos Grid */
+        .cursos-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .curso-card {
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #0D47A1;
+            border-radius: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .curso-card:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        }
+        
+        .curso-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+        
+        .curso-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+        
+        .curso-codigo {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .curso-badge {
+            background: #0D47A1;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .curso-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .curso-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #0D47A1;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1565C0;
+        }
+        
+        .btn-secondary {
+            background: #E3F2FD;
+            color: #0D47A1;
+        }
+        
+        .btn-secondary:hover {
+            background: #BBDEFB;
+        }
+        
+        /* Actividades Recientes */
+        .actividades-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .actividad-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #4CAF50;
+            transition: all 0.3s;
+        }
+        
+        .actividad-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .actividad-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .actividad-titulo {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .actividad-tiempo {
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .actividad-descripcion {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        /* Notificaciones */
+        .notification-item {
+            padding: 15px;
+            background: #fff3e0;
+            border-radius: 8px;
+            border-left: 3px solid #FF9800;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .notification-item:hover {
+            background: #ffe0b2;
+            transform: translateX(5px);
+        }
+        
+        .notification-item.info {
+            background: #e3f2fd;
+            border-left-color: #2196F3;
+        }
+        
+        .notification-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .notification-message {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        /* Quick Actions */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .quick-action-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #0D47A1;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(13, 71, 161, 0.2);
+        }
+        
+        .quick-action-icon {
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">UCC</div>
+            <div class="header-title">
+                <h1>Portal Docente</h1>
+                <p>Nombre de la Institución</p>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Buscar estudiantes, cursos...">
+            </div>
+            
+            <div class="notification-icon">
+                🔔
+                <div class="notification-badge">5</div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">CR</div>
+                <div>
+                    <div style="font-weight: bold;">Carlos Rodríguez</div>
+                    <div style="font-size: 12px; opacity: 0.8;">Profesor</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <h2>¡Bienvenido, Prof. Carlos Rodríguez!</h2>
+            <p>Gestiona tus cursos, calificaciones y estudiantes desde aquí</p>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>4</h3>
+                    <p>Cursos Activos</p>
+                </div>
+                <div class="stat-icon">📚</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>128</h3>
+                    <p>Estudiantes Total</p>
+                </div>
+                <div class="stat-icon">👥</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>45</h3>
+                    <p>Calificaciones Pendientes</p>
+                </div>
+                <div class="stat-icon">✏️</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>4.3</h3>
+                    <p>Promedio General</p>
+                </div>
+                <div class="stat-icon">⭐</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Mis Cursos -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2><span>📖</span> Mis Cursos - Periodo 2025-3</h2>
+                    <a href="#" class="view-all">Ver todos →</a>
+                </div>
+                
+                <div class="cursos-grid">
+                    <div class="curso-card">
+                        <div class="curso-header">
+                            <div>
+                                <div class="curso-title">Lenguaje</div>
+                                <div class="curso-codigo">Len-201 • Grupo A</div>
+                            </div>
+                            <div class="curso-badge">Activo</div>
+                        </div>
+                        
+                        <div class="curso-info">
+                            <div class="curso-info-item">
+                                <span>👥</span>
+                                <span>32 estudiantes</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>🕐</span>
+                                <span>Lun-Mie 10:00</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>📍</span>
+                                <span>Aula 301</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>📊</span>
+                                <span>Promedio: 4.2</span>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary">Ver Estudiantes</button>
+                            <button class="btn btn-secondary">Registrar Notas</button>
+                        </div>
+                    </div>
+                    
+                    <div class="curso-card">
+                        <div class="curso-header">
+                            <div>
+                                <div class="curso-title">Lenguaje</div>
+                                <div class="curso-codigo">Len-202 • Grupo B</div>
+                            </div>
+                            <div class="curso-badge">Activo</div>
+                        </div>
+                        
+                        <div class="curso-info">
+                            <div class="curso-info-item">
+                                <span>👥</span>
+                                <span>28 estudiantes</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>🕐</span>
+                                <span>Mar-Jue 14:00</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>📍</span>
+                                <span>Aula 205</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>📊</span>
+                                <span>Promedio: 4.5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary">Ver Estudiantes</button>
+                            <button class="btn btn-secondary">Registrar Notas</button>
+                        </div>
+                    </div>
+                    
+                    <div class="curso-card">
+                        <div class="curso-header">
+                            <div>
+                                <div class="curso-title">Lenguaje</div>
+                                <div class="curso-codigo">Len-203 • Grupo A</div>
+                            </div>
+                            <div class="curso-badge">Activo</div>
+                        </div>
+                        
+                        <div class="curso-info">
+                            <div class="curso-info-item">
+                                <span>👥</span>
+                                <span>35 estudiantes</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>🕐</span>
+                                <span>Vie 08:00</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>📍</span>
+                                <span>Aula 201</span>
+                            </div>
+                            <div class="curso-info-item">
+                                <span>📊</span>
+                                <span>Promedio: 4.1</span>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary">Ver Estudiantes</button>
+                            <button class="btn btn-secondary">Registrar Notas</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions-grid">
+                    <button class="quick-action-btn">
+                        <span class="quick-action-icon">📋</span>
+                        <span>Lista de Asistencia</span>
+                    </button>
+                    <button class="quick-action-btn">
+                        <span class="quick-action-icon">📈</span>
+                        <span>Reportes</span>
+                    </button>
+                    <button class="quick-action-btn">
+                        <span class="quick-action-icon">💬</span>
+                        <span>Mensajes</span>
+                    </button>
+                    <button class="quick-action-btn">
+                        <span class="quick-action-icon">⚙️</span>
+                        <span>Configuración</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div>
+                <!-- Actividades Recientes -->
+                <div class="section-card" style="margin-bottom: 20px;">
+                    <div class="section-header">
+                        <h2>📌 Actividades Recientes</h2>
+                    </div>
+                    
+                    <div class="actividades-list">
+                        <div class="actividad-item">
+                            <div class="actividad-header">
+                                <span class="actividad-titulo">Notas Registradas</span>
+                                <span class="actividad-tiempo">Hace 1h</span>
+                            </div>
+                            <div class="actividad-descripcion">
+                                Registraste 15 calificaciones del examen 2 en Len-201
+                            </div>
+                        </div>
+                        
+                        <div class="actividad-item">
+                            <div class="actividad-header">
+                                <span class="actividad-titulo">Material Subido</span>
+                                <span class="actividad-tiempo">Hace 3h</span>
+                            </div>
+                            <div class="actividad-descripcion">
+                                Compartiste presentación "Ortografia" en Len-202
+                            </div>
+                        </div>
+                        
+                        <div class="actividad-item">
+                            <div class="actividad-header">
+                                <span class="actividad-titulo">Observación Agregada</span>
+                                <span class="actividad-tiempo">Ayer</span>
+                            </div>
+                            <div class="actividad-descripcion">
+                                Agregaste observación al estudiante Juan Pérez en Len-202
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notificaciones -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>🔔 Notificaciones</h2>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-title">Recordatorio de Entrega</div>
+                        <div class="notification-message">
+                            Tienes 12 trabajos pendientes de calificar en Len-201
+                        </div>
+                    </div>
+                    
+                    <div class="notification-item info">
+                        <div class="notification-title">Consulta Estudiantil</div>
+                        <div class="notification-message">
+                            3 estudiantes solicitaron reunión de asesoría
+                        </div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-title">Plazo de Notas</div>
+                        <div class="notification-message">
+                            Quedan 5 días para cierre del periodo de notas
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
